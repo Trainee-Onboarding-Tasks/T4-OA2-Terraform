@@ -1,5 +1,17 @@
 
-output "main_proxy_server_public_ip" {
-  description = "Main-proxy-server server public IP-address"
-  value       = aws_instance.main_proxy_server.public_ip
+output "proxy_server_public_ip" {
+  description = "Public IP address of proxy server"
+  value       = aws_instance.proxy_server.public_ip
+}
+
+
+output "ansible_server_public_ip" {
+  description = "Public IP address of ansible server"
+  value       = aws_instance.ansible_server.public_ip
+}
+
+
+output "proxy_server_instance_id" {
+  value       = aws_instance.proxy_server.id
+  description = "Proxy server instance ID"
 }

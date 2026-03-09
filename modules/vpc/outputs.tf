@@ -15,15 +15,3 @@ output "public_subnet_cidrs" {
   description = "List of public subnet address"
   value       = [for subnet in aws_subnet.public_subnets : subnet.cidr_block]
 }
-
-
-output "private_llm_servers_subnet_ids" {
-  description = "List of private llm servers subnet ids"
-  value       = [for subnet in aws_subnet.private_servers_subnets : subnet.id]
-}
-
-
-output "private_db_subnet_ids" {
-  description = "List of private database subnet ids"
-  value       = [for subnet in aws_subnet.private_db_subnets : subnet.id]
-}

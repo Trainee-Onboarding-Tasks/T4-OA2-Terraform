@@ -6,16 +6,30 @@ variable "aws_region" {
 }
 
 
-variable "main_proxy_instance_ami_id" {
+variable "proxy_server_instance_ami_id" {
   type        = string
-  description = "AMI ID for main-proxy instance server"
-  default     = "ami-0eb615743219af12d"
+  description = "AMI ID for proxy instance server"
+  default     = "ami-085191ce42d057e42"
 }
 
 
-variable "main_proxy_instance_type" {
+variable "ansible_server_instance_ami_id" {
   type        = string
-  description = "Main-proxy instance type name"
+  description = "AMI ID for ansible instance server"
+  default     = "ami-0bb30b8e72c272505"
+}
+
+
+variable "proxy_server_instance_type" {
+  type        = string
+  description = "Proxy server instance type name"
+  default     = "t3.medium"
+}
+
+
+variable "ansible_server_instance_type" {
+  type        = string
+  description = "Ansible server instance type name"
   default     = "t3.micro"
 }
 
@@ -24,22 +38,4 @@ variable "key_pair_name" {
   type        = string
   description = "SSH key for instance access"
   default     = "grant-admin-key"
-}
-
-
-variable "github_client_id" {
-  type        = string
-  description = ""
-}
-
-
-variable "github_client_secret" {
-  type        = string
-  description = ""
-}
-
-
-variable "cookie_secret" {
-  type        = string
-  description = ""
 }
