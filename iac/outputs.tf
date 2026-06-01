@@ -5,9 +5,9 @@ output "proxy_server_public_ip" {
 }
 
 
-output "ansible_server_public_ip" {
-  description = "Public IP address of ansible server"
-  value = module.servers.ansible_server_public_ip
+output "proxy_server_instance_id" {
+  value       =  module.servers.proxy_server_instance_id
+  description = "Proxy server instance ID"
 }
 
 
@@ -18,6 +18,6 @@ output "alb_dns_name" {
 
 
 output "dns_name" {
-  description = "NDS URL name"
+  description = "DNS URL name"
   value       = "https://trainee-keycloack.store"
 }
