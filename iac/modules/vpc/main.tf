@@ -1,13 +1,13 @@
 
 resource "aws_vpc" "main_vpc" {
-    cidr_block           = var.cidr
-    enable_dns_support   = true
-    enable_dns_hostnames = true
+  cidr_block           = var.cidr
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
-    tags = {
-      Name = "main-vpc"
-    }
+  tags = {
+    Name = "main-vpc-t4"
   }
+}
 
 
 resource "aws_subnet" "public_subnets" {
@@ -22,7 +22,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet-${each.key + 1}"
+    Name = "public-subnet-${each.key + 1}-t4"
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_internet_gateway" "main_igw" {
   vpc_id = aws_vpc.main_vpc.id
 
   tags = {
-    Name = "main-igw"
+    Name = "main-igw-t4"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_eip" "main_eip" {
   domain = "vpc"
 
   tags = {
-    Name = "main-eip"
+    Name = "main-eip-t4"
   }
 }
 
@@ -48,6 +48,10 @@ resource "aws_eip" "main_eip" {
 resource "aws_nat_gateway" "main_nat" {
   allocation_id = aws_eip.main_eip.id
   subnet_id     = values(aws_subnet.public_subnets)[0].id
+
+  tags = {
+    Name = "main-nat-t4"
+  }
 }
 
 
@@ -60,7 +64,7 @@ resource "aws_route_table" "main_public_route_table" {
   }
 
   tags = {
-    Name = "main-public-route-table"
+    Name = "main-public-route-table-t4"
   }
 }
 

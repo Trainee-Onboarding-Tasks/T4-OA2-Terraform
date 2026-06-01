@@ -3,8 +3,8 @@ terraform {
   required_version = ">=1.5.0"
 
   backend "s3" {
-    bucket   = "wordpress-app-ss-state-bucket"
-    key      = "app/state"
+    bucket   = "trainee-onboarding-tasks"
+    key      = "t4/state"
     region   = "us-east-1"
     encrypt  = true
   }
@@ -52,15 +52,12 @@ module "sg" {
       allowed_cidr_blocks     = ["0.0.0.0/0"]
       allowed_security_groups = ["alb_sg"]
     }
-
-    ansible_server_sg = {
-      ingress_ports_tcp       = [22, 80, 443]
-      ingress_ports_udp       = []
-      allowed_cidr_blocks     = ["0.0.0.0/0"]
-      allowed_security_groups = []
-    }
-
   }
+}
+
+
+module "iam" {
+  source = "./modules/iam"
 }
 
 
@@ -68,25 +65,26 @@ module "servers" {
   source                            = "./modules/servers"
 
   proxy_server_instance_ami_id      = var.proxy_server_instance_ami_id
-  ansible_server_instance_ami_id    = var.ansible_server_instance_ami_id
-
   proxy_server_instance_type        = var.proxy_server_instance_type
-  ansible_server_instance_type      = var.ansible_server_instance_type
 
   list_of_proxy_server_sg_ids       = [module.sg.security_group_ids["proxy_server_sg"]]
-  list_of_ansible_server_sg_ids     = [module.sg.security_group_ids["ansible_server_sg"]]
-
   public_subnet_ids                 = module.vpc.public_subnet_ids
 
-  key_pair_name                     = var.key_pair_name
+  iam_proxy_profile_name            = module.iam.iam_proxy_profile_name
 }
 
 
 module "alb" {
-  source                   = "./modules/alb"
+  source                    = "./modules/alb"
 
-  vpc_id                   = module.vpc.vpc_id
-  public_subnet_ids        = module.vpc.public_subnet_ids
-  alb_sg_id                = [module.sg.security_group_ids["alb_sg"]]
-  proxy_server_instance_id = module.servers.proxy_server_instance_id
+  vpc_id                    = module.vpc.vpc_id
+  public_subnet_ids         = module.vpc.public_subnet_ids
+  alb_sg_ids                = [module.sg.security_group_ids["alb_sg"]]
+  
+  proxy_server_instance_id  = module.servers.proxy_server_instance_id
+
+  alb_listener_http_port    = var.alb_listener_http_port
+  alb_listener_https_port   = var.alb_listener_https_port
+  proxy_listener_port       = var.proxy_listener_port
+  https_certificate_arn     = var.https_certificate_arn
 }
