@@ -14,14 +14,14 @@ resource "aws_iam_role" "proxy_role" {
   })
 
   tags = {
-    Name= "proxy-server-policy-t4"
+    Name = "proxy-server-policy-t4"
   }
 }
 
 
 resource "aws_iam_role_policy_attachment" "proxy_ssm" {
   role       = aws_iam_role.proxy_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 
