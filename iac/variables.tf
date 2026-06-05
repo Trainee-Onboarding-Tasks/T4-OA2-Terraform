@@ -13,10 +13,24 @@ variable "proxy_server_instance_ami_id" {
 }
 
 
+variable "ansible_server_instance_ami_id" {
+  type        = string
+  description = "AMI ID for proxy instance server"
+  default     = "ami-0dd23b7cbc421d704"
+}
+
+
 variable "proxy_server_instance_type" {
   type        = string
   description = "Proxy server instance type name"
-  default     = "t3.medium"
+  default     = "t3.micro"
+}
+
+
+variable "ansible_server_instance_type" {
+  type        = string
+  description = "Proxy server instance type name"
+  default     = "t3.micro"
 }
 
 
