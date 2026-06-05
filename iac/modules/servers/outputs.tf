@@ -9,3 +9,16 @@ output "proxy_server_instance_id" {
   value       = aws_instance.proxy_server.id
   description = "Proxy server instance ID"
 }
+
+
+output "ansible_server_public_ip" {
+  description = "Public IP address of ansible server"
+  value       = aws_instance.ansible_server.public_ip
+}
+
+
+output "ansible_server_instance_id" {
+  value       = aws_instance.ansible_server.id
+  description = "Ansible server instance ID"
+}
+

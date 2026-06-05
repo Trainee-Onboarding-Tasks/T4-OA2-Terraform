@@ -52,6 +52,13 @@ module "sg" {
       allowed_cidr_blocks     = ["0.0.0.0/0"]
       allowed_security_groups = ["alb_sg"]
     }
+
+    ansible_server_sg = {
+      ingress_ports_tcp       = [22]
+      ingress_ports_udp       = []
+      allowed_cidr_blocks     = ["0.0.0.0/0"]
+      allowed_security_groups = []
+    }
   }
 }
 
@@ -65,12 +72,16 @@ module "servers" {
   source                            = "./modules/servers"
 
   proxy_server_instance_ami_id      = var.proxy_server_instance_ami_id
+  ansible_server_instance_ami_id    = var.ansible_server_instance_ami_id
   proxy_server_instance_type        = var.proxy_server_instance_type
+  ansible_server_instance_type      = var.ansible_server_instance_type
 
   list_of_proxy_server_sg_ids       = [module.sg.security_group_ids["proxy_server_sg"]]
+  list_of_ansible_server_sg_ids     = [module.sg.security_group_ids["ansible_server_sg"]]
   public_subnet_ids                 = module.vpc.public_subnet_ids
 
   iam_proxy_profile_name            = module.iam.iam_proxy_profile_name
+  iam_ansible_profile_name          = module.iam.iam_ansible_profile_name
 }
 
 

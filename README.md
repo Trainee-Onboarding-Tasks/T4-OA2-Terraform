@@ -17,13 +17,23 @@
 
 This repository contains Infrastructure as Code (IaC) written in Terraform for deploying the infrastructure required to host an OAuth2 authentication and authorization server on AWS.
 
-It provisions the core cloud resources needed to run the OAuth2 service, including networking, security, compute resources, and supporting infrastructure.
+It provisions the core cloud resources needed to run the OAuth2 service, including networking, security, compute resources, and supporting infrastructure. 
 
-The environment consists of a VPC with public subnets, security groups that control access between components, and EC2 instances that host the OAuth2 server. Additional AWS resources such as IAM roles, and load balancing components can be deployed to provide secure and reliable operation of the authentication platform.
+### Separation of Responsibilities
 
-The repository focuses on infrastructure provisioning only and does not include application-level configuration of the OAuth2 server itself.
+To ensure clean and maintainable operations, the project enforces a strict separation of concerns between infrastructure provisioning and software configuration:
 
-All infrastructure is deployed automatically through GitHub Actions workflows, providing a consistent and repeatable deployment process across environments.
+*   **Infrastructure Provisioning (Terraform):** Responsible for the lifecycle, orchestration, and wiring of all AWS cloud resources. It builds the network foundation (VPC, Subnets, Load Balancers) and spins up the virtual hardware (EC2 instances).
+*   **Configuration Management (Ansible):** Responsible for OS hardening, dependency installation, and deploying the OAuth2 server software onto the provisioned instances.
+
+### Environment Architecture
+
+The environment is architected for security and automated management, split into distinct layers:
+*   **Edge & Routing:** An Application Load Balancer acts as the single public entry point, handling SSL/TLS termination and shielding the backend instances.
+*   **Application Layer:** The OAuth2 server runs on a dedicated EC2 instance inside the VPC, isolated from direct internet access and reachable only via the load balancer.
+*   **Management & CI/CD Control Node:** A dedicated **Ansible Server** is deployed within the infrastructure. This server acts as an internal execution environment that pulls playbooks from the GitHub repository - https://github.com/Trainee-Onboarding-Tasks/T4-OA2-Ansible.git  and bridges GitHub Actions workflows with the AWS infrastructure to safely configure and deploy application updates.
+
+All infrastructure is deployed automatically through GitHub Actions workflows, providing a consistent, auditable, and repeatable deployment process across environments.
 
 ---
 
@@ -56,6 +66,10 @@ All infrastructure is deployed automatically through GitHub Actions workflows, p
         - EC2 instance hosting the OAuth2 service
         - Deployed inside the VPC
         - Handles authentication and authorization requests
+
+    - Ansible server
+        - EC2 instance with ansible for configuration management and deployment
+        - Handles GitHub Actions CI/CD pipelines
 
 4. Load Balancing (LB module)
     - Application Load Balancer
@@ -154,10 +168,24 @@ Create or update an two A record with names `oauth2.trainee-keycloack.store`, `k
     }
 
 
+    variable "ansible_server_instance_ami_id" {
+      type        = string
+      description = "AMI ID for proxy instance server"
+      default     = "ami-0dd23b7cbc421d704"
+    }
+
+
     variable "proxy_server_instance_type" {
       type        = string
       description = "Proxy server instance type name"
       default     = "t3.medium"
+    }
+
+
+    variable "ansible_server_instance_type" {
+      type        = string
+      description = "Proxy server instance type name"
+      default     = "t3.micro"
     }
 
 
